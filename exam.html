@@ -13,6 +13,236 @@
     const a = _EXAMDATA;
     console.log(a); // 위 하이퍼링크된 js 파일 데이터
     // 자유롭게 활용
-  </script>
+    //태그 생성
+    const tags = {  
+      root : document.getElementById('root'),
+      header : "header",
+      section1 : "section",
+      section2 : "section",
+      section3 : "section",
+      section4 : "section",
+      footer : "footer",
+      //header
+      icon : "img",
+      title : "h1",
+      //section1
+      article1 : "article",
+      article2 : "article",
+      article3 : "article",
+      //section2
+      member : "div",
+      //section3
+      subject : "div",
+      //section4
+      end : "div",
+      else : "div",
+    }
+    const children = {
+      root : ["header", "section1", "section2", "section3", "section4", "footer"],
+      header : ["icon", "title"],
+      section1 : ["article1","article2","article3"],
+      section2 : ["member1","member2","member3","member4","member5"],
+      section3 : ["subject1", "subject2", "subject3", "subject4", "subject5", "subject6", "subject7","subject8","subject9"],
+      section4 : ["end"],
+      footer : ["else"]
+      //추가할 것
+    }
+    const textContent = {
+      title : `제 ${a.teamInformation.teamNumber}조 ${a.teamInformation.teamName}`,
+      member : a.teamInformation.teamAllMember,
+      subject : a.trainingInformation.subject,
+      end : "감사합니다",
+      else : "Copyright",
+    }
+
+    const styleSet = {
+      root : {
+        width : "100vw",
+        height : "auto",
+        border : "1px solid black",
+        backgroundColor : "#FFF",
+        overflowX : "hidden",
+        display: "flex",
+        flexDirection : "column",
+      },
+      //header
+      header : {
+        width : "100%",
+        height : "10vh",
+        backgroundColor : a.designInformation.colorSet[2],
+        border : "1px solid black",
+        display: "flex",
+        alignItems : "center",
+      },
+      icon : {
+        width : "100px",
+        height : "100px",
+        backgroundColor : a.designInformation.colorSet[3],
+        border : "1px solid black",
+        borderRadius : "50%"
+      },
+      title : {
+        width : "auto",
+        height : "50%",
+        // backgroundColor : a.designInformation.colorSet[3],
+        border : "1px solid black",
+      },
+      //sectoin1
+      section1 : {
+        width : "100%",
+        height : "90vh",
+        backgroundColor : a.designInformation.colorSet[1],
+        border : "1px solid black"
+      },
+      //section2
+      section2 : {
+        width : "100%",
+        height : "100vh",
+        backgroundColor : a.designInformation.colorSet[0],
+        border : "1px solid black"
+      },
+      //section3
+      section3 : {
+        width : "100%",
+        height : "100vh",
+        backgroundColor : a.designInformation.colorSet[1],
+        border : "1px solid black"
+      },
+      //section4
+      section4 : {
+        width : "100%",
+        height : "100vh",
+        backgroundColor : a.designInformation.colorSet[0],
+        border : "1px solid black"
+      },
+      //footer
+      footer : {
+        width : "100%",
+        height : "20vh",
+        backgroundColor : a.designInformation.colorSet[3],
+        border : "1px solid black"
+      },
+    }
+    //레거시 태그메이커()
+    // function tagMaker(tagsObj) {
+    //   const elements = {};
+    //   let rootNode = document.getElementById('root')
+    //   elements.rootNode = rootNode;
+    //   for(let tagGroup in tagsObj){
+    //     //root의 자식들 만들기
+    //     if(tagGroup === "root"){
+    //       elements[tagGroup] = {};
+    //       for(let element in tagsObj[tagGroup]){
+    //         let item = document.createElement(tagsObj[tagGroup][element]);
+    //         if(element !== "header" && element !== "footer"){
+    //             item.id = element;
+    //         }
+    //         elements[tagGroup][element] = item;
+    //         elements.rootNode.appendChild(item);
+    //       }
+    //     } else {
+    //       //root의 자식태그의 자식들 만들기
+    //       let parent = elements.root[tagGroup];
+    //       elements[tagGroup] = {};
+    //       for(let element in tagsObj[tagGroup]){
+    //         let item = document.createElement(tagsObj[tagGroup][element]);
+    //         item.id = element;
+    //         elements[tagGroup][element] = item;
+    //         parent.appendChild(item);
+    //       }
+    //     }
+    //   } 
+    //   return elements;
+    // }
+    function tagMaker(tagsObj) {
+      let elemObj = Object();
+      for(let tagKey in tagsObj){
+        if(tagKey === "root"){
+          elemObj[tagKey] = tagsObj[tagKey];
+        }else if(tagKey === "member") {
+          //멤버의 수 만큼 작성
+          a.teamInformation.teamAllMember.forEach(function(memberObj){
+            elemObj[tagKey+memberObj.memberNumber] = document.createElement(tagsObj[tagKey]);
+            elemObj[tagKey+memberObj.memberNumber+"Number"] = document.createElement("p");
+            elemObj[tagKey+memberObj.memberNumber+"Name"] = document.createElement("p");
+            elemObj[tagKey+memberObj.memberNumber+"Position"] = document.createElement("p");
+            elemObj[tagKey+memberObj.memberNumber+"GithubUrl"] = document.createElement("p");
+            
+            children[tagKey+memberObj.memberNumber]=[tagKey+memberObj.memberNumber+"Number",tagKey+memberObj.memberNumber+"Name",tagKey+memberObj.memberNumber+"Position",tagKey+memberObj.memberNumber+"GithubUrl"];
+          })
+        }else if(tagKey === "subject") {
+          //subject의 수 만큼 작성
+          for(let i = 0; i < a.trainingInformation.subject.length; i++){
+            elemObj[tagKey+(i+1)] = document.createElement(tagsObj[tagKey]);
+            elemObj[tagKey+(i+1)+"Title"] = document.createElement("h1");
+            elemObj[tagKey+(i+1)+"Discription"] = document.createElement("p");
+            
+            children[tagKey+(i+1)]=[tagKey+(i+1)+"Title",tagKey+(i+1)+"Discription"];
+          }
+        }else {
+          elemObj[tagKey] = document.createElement(tagsObj[tagKey]);
+        }
+      }
+      return elemObj;
+    }
+    //스타일 세터
+    function setStyle(styleObj){
+      
+      for(let elemKey in elements){
+        for(let styleKey in styleObj[elemKey]){
+          if(styleKey === "member"){
+            
+          }else if(styleKey === "subject"){
+
+          }else {
+            elements[elemKey].style[styleKey] = styleObj[elemKey][styleKey];
+          }
+        }
+      }
+    }
+    function setChildren(childObj){
+      for(let childKey in childObj){
+        childObj[childKey].forEach(function(key){
+          elements[childKey].appendChild(elements[key]);  
+        });
+      } 
+    }
+    function setTContent(contentObj){
+      for(let contentKey in contentObj){
+        if(contentKey === "member"){
+          //컨텐츠가 팀멤버일 경우
+          for(let index=0; index < textContent.member.length; index++ ){
+              console.log(contentKey+(index+1)+"Number");
+              elements[contentKey+(index+1)+"Number"].textContent = `팀 No.${textContent.member[index].memberNumber}`;
+              elements[contentKey+(index+1)+"Name"].textContent = textContent.member[index].name;
+              console.log(elements)
+              console.log(textContent.member[0].teamPosition);
+              elements[contentKey+(index+1)+"Position"].textContent = textContent.member[index].teamPosition;
+              elements[contentKey+(index+1)+"GithubUrl"].textContent = textContent.member[index].githubAddress;
+            }
+        }else if(contentKey === "subject"){
+          //컨텐츠가 훈련 목록일 경우
+          for(let index=0; index < textContent.subject.length; index++) {
+            elements[contentKey+(index+1)+"Title"].textContent = textContent.subject[index];
+            elements[contentKey+(index+1)+"Discription"].textContent = "이곳에 설명을 넣으시오";
+            
+          }
+        }else{
+          elements[contentKey].textContent = contentObj[contentKey];
+        }
+      }
+    }
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+
+    const elements = tagMaker(tags);
+    setChildren(children);
+    setStyle(styleSet);
+    setTContent(textContent);
+    //console.log(elements);
+    //console.dir(elements);
+    //a.designInformation.colorSet.forEach(function(color){console.log(color);})
+  
+    </script>
 </body>
 </html>
