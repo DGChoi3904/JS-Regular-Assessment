@@ -15,26 +15,28 @@
     // 자유롭게 활용
     //태그 생성
     const tags = {  
+      //root는 이미 생성되어있기에 연결만 함
       root : document.getElementById('root'),
+      //root의 자식들
       header : "header",
       section1 : "section",
       section2 : "section",
       section3 : "section",
       section4 : "section",
       footer : "footer",
-      //header
+      //header의 자식들
       icon : "img",
       title : "h1",
-      //section1
+      //section1의 자식들
       article1 : "article",
       article2 : "article",
       article3 : "article",
-      //article1
+      //article1의 
       greeting : "h1",
-      //article2
+      //article2의 자식들(예정)
       teamTitle : "h2",
       teamExplain : "p",
-      //article3
+      //article3의 자식들
       teamManagerPic : "img",
       tMtextContainer : "div",
       //tmTextContainer
@@ -70,12 +72,13 @@
       member : a.teamInformation.teamAllMember,
       subject : a.trainingInformation.subject,
       article1 : a.teamInformation.teamNameStory,
+      //끝인사 페이지
       thankyou : "감사합니다",
+      //footer
       who : "최대건",
       when : "2023년 3월 10일",
       where : "그린아트컴퓨터학원 305호실"
     }
-
     const styleSet = {
       root : {
         width : "100vw",
@@ -145,107 +148,124 @@
         border : "1px solid black"
       },
     }
-    //레거시 태그메이커()
-    // function tagMaker(tagsObj) {
-    //   const elements = {};
-    //   let rootNode = document.getElementById('root')
-    //   elements.rootNode = rootNode;
-    //   for(let tagGroup in tagsObj){
-    //     //root의 자식들 만들기
-    //     if(tagGroup === "root"){
-    //       elements[tagGroup] = {};
-    //       for(let element in tagsObj[tagGroup]){
-    //         let item = document.createElement(tagsObj[tagGroup][element]);
-    //         if(element !== "header" && element !== "footer"){
-    //             item.id = element;
-    //         }
-    //         elements[tagGroup][element] = item;
-    //         elements.rootNode.appendChild(item);
-    //       }
-    //     } else {
-    //       //root의 자식태그의 자식들 만들기
-    //       let parent = elements.root[tagGroup];
-    //       elements[tagGroup] = {};
-    //       for(let element in tagsObj[tagGroup]){
-    //         let item = document.createElement(tagsObj[tagGroup][element]);
-    //         item.id = element;
-    //         elements[tagGroup][element] = item;
-    //         parent.appendChild(item);
-    //       }
-    //     }
-    //   } 
-    //   return elements;
-    // }
+    //태그메이커 (레거시)
+    /*
+    function tagMaker(tagsObj) { //레거시 태그메이커()
+      const elements = {};
+      let rootNode = document.getElementById('root')
+      elements.rootNode = rootNode;
+      for(let tagGroup in tagsObj){
+        //root의 자식들 만들기
+        if(tagGroup === "root"){
+          elements[tagGroup] = {};
+          for(let element in tagsObj[tagGroup]){
+            let item = document.createElement(tagsObj[tagGroup][element]);
+            if(element !== "header" && element !== "footer"){
+                item.id = element;
+            }
+            elements[tagGroup][element] = item;
+            elements.rootNode.appendChild(item);
+          }
+        } else {
+          //root의 자식태그의 자식들 만들기
+          let parent = elements.root[tagGroup];
+          elements[tagGroup] = {};
+          for(let element in tagsObj[tagGroup]){
+            let item = document.createElement(tagsObj[tagGroup][element]);
+            item.id = element;
+            elements[tagGroup][element] = item;
+            parent.appendChild(item);
+          }
+        }
+      } 
+      return elements;
+    }*/
+    //태그메이커 
     function tagMaker(tagsObj) {
-      let elemObj = Object();
+      let elemObj = Object(); // return용 객체 선언 및 할당
       for(let tagKey in tagsObj){
-        if(tagKey === "root"){
+        if(tagKey === "root"){ //태그 키가 root일경우, 이미 생성되어있는 root를 연결
           elemObj[tagKey] = tagsObj[tagKey];
-        }else if(tagKey === "member") {
-          //멤버의 수 만큼 작성
+        }else if(tagKey === "member") { //태그 키가 member일경우,
+          //멤버의 수(teamAllMember.length) 만큼 작성
           a.teamInformation.teamAllMember.forEach(function(memberObj){
+            //멤버 컨테이너
             elemObj[tagKey+memberObj.memberNumber] = document.createElement(tagsObj[tagKey]);
+            //멤버의 번호
             elemObj[tagKey+memberObj.memberNumber+"Number"] = document.createElement("p");
+            //멤버의 이름
             elemObj[tagKey+memberObj.memberNumber+"Name"] = document.createElement("p");
+            //멤버의 직분
             elemObj[tagKey+memberObj.memberNumber+"Position"] = document.createElement("p");
+            //멤버의 깃주소
             elemObj[tagKey+memberObj.memberNumber+"GithubUrl"] = document.createElement("p");
-            
+            //멤버의 하위태그들 부모자식관계도 children에 기입
             children[tagKey+memberObj.memberNumber]=[tagKey+memberObj.memberNumber+"Number",tagKey+memberObj.memberNumber+"Name",tagKey+memberObj.memberNumber+"Position",tagKey+memberObj.memberNumber+"GithubUrl"];
           })
         }else if(tagKey === "subject") {
           //subject의 수 만큼 작성
           for(let i = 0; i < a.trainingInformation.subject.length; i++){
+            //subject 컨테이너
             elemObj[tagKey+(i+1)] = document.createElement(tagsObj[tagKey]);
+            //subject 타이틀
             elemObj[tagKey+(i+1)+"Title"] = document.createElement("h1");
+            //subject 설명
             elemObj[tagKey+(i+1)+"Discription"] = document.createElement("p");
-            
+            //subject의 하위 태그들 부모자식관계도  children에 기입
             children[tagKey+(i+1)]=[tagKey+(i+1)+"Title",tagKey+(i+1)+"Discription"];
           }
         }else {
+          //header 및 footer 같은 하나만 존재하는 고유태그들 생성 및 객체에 할당
           elemObj[tagKey] = document.createElement(tagsObj[tagKey]);
         }
       }
-      return elemObj;
+      return elemObj; //객체 반환
     }
     //스타일 세터
     function setStyle(styleObj){
-      
-      for(let elemKey in elements){
-        for(let styleKey in styleObj[elemKey]){
-          if(styleKey === "member"){
+      for(let elemKey in elements){ //생성된 태그만큼 반복
+        for(let styleKey in styleObj[elemKey]){ // 스타일셋에 생성된 키수만큼 반복
+          if(styleKey === "member"){ // 멤버일 경우 멤버의 하위 태그 스타일 설정
             
-          }else if(styleKey === "subject"){
+          }else if(styleKey === "subject"){// subject일 경우 하위 태그 스타일 설정
 
           }else {
+            //그외에는 동일한 이름으로 지정된 스타일셋 키의 키갯수만큼 스타일 설정
             elements[elemKey].style[styleKey] = styleObj[elemKey][styleKey];
           }
         }
       }
     }
+    //부모자식관계 세터
     function setChildren(childObj){
-      for(let childKey in childObj){
-        childObj[childKey].forEach(function(key){
-          elements[childKey].appendChild(elements[key]);  
+      for(let childKey in childObj){ //children의 키를 꺼냄
+        childObj[childKey].forEach(function(key){//key에 설정된 value, 배열값을 forEach를 사용하여 해당 배열의 value마다 실행 반복
+          elements[childKey].appendChild(elements[key]);  //키 값 childKey는 value의 부모의 이름으로 세팅되어 있으므로 자식의 이름인 key를 appendChild()함.
         });
       } 
     }
+    //텍스트컨텐츠 세터
     function setTContent(contentObj){
       for(let contentKey in contentObj){
         if(contentKey === "member"){
           //컨텐츠가 팀멤버일 경우
           for(let index=0; index < textContent.member.length; index++ ){
-              console.log(contentKey+(index+1)+"Number");
+            //오타주의, 혹시 모르니 console.log 기록을 남겨둠
+              //console.log(contentKey+(index+1)+"Number");
               elements[contentKey+(index+1)+"Number"].textContent = `팀 No.${textContent.member[index].memberNumber}`;
               elements[contentKey+(index+1)+"Name"].textContent = textContent.member[index].name;
-              console.log(elements)
-              console.log(textContent.member[0].teamPosition);
+              //이름 한글자가 빠져 오타 찾는데 오래걸렸기에 여기서 콘솔을 돌림
+              //console.log(elements)
+              //console.log(textContent.member[0].teamPosition);
               elements[contentKey+(index+1)+"Position"].textContent = textContent.member[index].teamPosition;
               elements[contentKey+(index+1)+"GithubUrl"].textContent = textContent.member[index].githubAddress;
             }
         }else if(contentKey === "subject"){
           //컨텐츠가 훈련 목록일 경우
           for(let index=0; index < textContent.subject.length; index++) {
+            //타이틀에 트레이닝정보의 subject value값을 넣음
             elements[contentKey+(index+1)+"Title"].textContent = textContent.subject[index];
+            //추가 설명용 구문
             elements[contentKey+(index+1)+"Discription"].textContent = "이곳에 설명을 넣으시오";
           }
         }else{
@@ -253,7 +273,9 @@
         }
       }
     }
+    //태그메이커 선언으로 캡슐화를 진행
     const elements = tagMaker(tags);
+    //기본 스타일, 부모자식관계, 텍스트컨텐츠 기입 하는 Default 설정
     function setDefault() {
       document.body.style.margin = "0";
       document.body.style.padding = "0";
@@ -262,9 +284,10 @@
       setStyle(styleSet);
       setTContent(textContent);
     }
+    //선언
     setDefault();
     
-    
+    //elemnets 객체가 제대로 생성되었는지 확인
     //console.log(elements);
     //console.dir(elements);
     //a.designInformation.colorSet.forEach(function(color){console.log(color);})
